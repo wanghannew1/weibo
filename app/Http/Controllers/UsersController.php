@@ -8,16 +8,30 @@ use Auth;
 
 class UsersController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth', [            
+            'except' => ['show', 'create', 'store']
+        ]);
+        /* 
+        不需要验证是否登录的页面是：创建用户的页面（create）、显示用户个人信息的页面（show）
+        不需要验证是否登录的操作是：创建用户时，点击创建按钮时的操作（store）
+        */
+        $this->middleware('guest', [
+            'only' => ['create']
+        ]);
+    }
+    //创建用户的页面，/users/create，不受中间件限制
     public function create()
     {
         return view('users.create');
     }
-
+    //显示用户个人信息的页面，/users/{user}，不受中间件限制
     public function show(User $user)
     {
         return view('users.show', compact('user'));
     }
-
+    //创建用户，不受中间件限制，点击创建按钮时的操作
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -38,11 +52,13 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
+        $this->authorize('update', $user);
         return view('users.edit', compact('user'));
     }
 
     public function update(User $user, Request $request)
     {
+        $this->authorize('update', $user);
         $this->validate($request, [
             'name' => 'required|max:50',
             'password' => 'nullable|confirmed|min:6'
