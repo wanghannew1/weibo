@@ -11,7 +11,7 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth', [            
-            'except' => ['show', 'create', 'store']
+            'except' => ['show', 'create', 'store', 'index']
         ]);
         /* 
         不需要验证是否登录的页面是：创建用户的页面（create）、显示用户个人信息的页面（show）
@@ -79,5 +79,15 @@ class UsersController extends Controller
         ]);
         */
         return redirect()->route('users.show', $user->id);
+    }
+    
+    /*
+    用户列表
+    */
+    public function index()
+    {
+        //$users = User::all();
+        $users = User::paginate(10);
+        return view('users.index', compact('users'));
     }
 }
