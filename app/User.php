@@ -53,4 +53,12 @@ class User extends Authenticatable
             $user->activation_token = Str::random(10);
         });
     }
+    
+    /*
+    与微博动态的一对多关系
+    */
+    public function statuses()
+    {
+        return $this->hasMany(Status::class);
+    }
 }
