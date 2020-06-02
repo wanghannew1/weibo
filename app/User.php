@@ -61,4 +61,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Status::class);
     }
+
+    /*
+    用户增加关注人的功能之后，
+    将使用该方法来获取当前用户关注的人发布过的所有微博动态。
+    */
+    public function feed()
+    {
+        return $this->statuses()
+                    ->orderBy('created_at', 'desc');
+    }
 }
