@@ -39,3 +39,7 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('passw
 
 // 微博状态RESTful路由
 Route::resource('statuses', 'StatusesController', ['only' => ['store', 'destroy']]);
+
+// 关注者列表和粉丝列表的路由
+Route::get('/users/{user}/followings', 'UsersController@followings')->name('users.followings');
+Route::get('/users/{user}/followers', 'UsersController@followers')->name('users.followers');
