@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use Auth;
 
 class User extends Authenticatable
 {
@@ -65,11 +66,16 @@ class User extends Authenticatable
     /*
     用户增加关注人的功能之后，
     将使用该方法来获取当前用户关注的人发布过的所有微博动态。
+    返回包括本人微博和关注博主微博的列表
     */
     public function feed()
     {
-        return $this->statuses()
-                    ->orderBy('created_at', 'desc');
+        $user_ids = $this->followings->pluck('id')->toArray();
+        array_push($user_ids, $this->id);
+        return Status::whereIn('user_id', $user_ids)
+                              ->with('user')
+                              ->orderBy('created_at', 'desc');
+        //return $this->statuses()->orderBy('created_at', 'desc');
     }
 
     /*
